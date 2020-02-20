@@ -49,7 +49,7 @@
                         <input type="text" class="form-control" id="decimal" placeholder="Decimal" disabled>
                     </div>
                 </div>
-                <div class="alert alert-danger alert-dismissible fade" id="binary_invalid" role="alert">
+                <div class="alert alert-danger alert-dismissible d-none" id="binary_invalid" role="alert">
                     <button type="button" class="close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -59,17 +59,26 @@
         </div>
     </div>
     <script>
-        document.querySelector('.close').onclick = function () {
-            this.parentElement.classList.remove('show');
-        }
+        alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.querySelector('.close').onclick = () => {
+                alert.classList.add('d-none');
+            }
+            alert.show = () => {
+                if (alert.classList.contains('d-none')) {
+                    alert.classList.remove('d-none');
+                    setTimeout(() => {
+                        alert.classList.add('d-none');
+                    }, 4000);
+                }
+            }
+        });
+
         document.querySelector('#binary').onkeyup = function () {
             if (this.value.match(/^[01]*$/g) == null) {
                 this.value = this.value.replace(/[^01]/i, "");
-                var alert = document.querySelector('#binary_invalid');
-                alert.classList.add('show');
-                setTimeout(alert => {
-                    alert.classList.remove('show');
-                },4000,alert);
+                document.querySelector('#binary_invalid').show();
+                return;
             }
             multiplicador = 1;
             total = 0;
